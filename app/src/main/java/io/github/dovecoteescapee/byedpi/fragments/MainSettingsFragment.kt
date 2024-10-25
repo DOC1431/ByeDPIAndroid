@@ -52,9 +52,9 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
                 true
             }
 
-        val switchCommandLineSettings = findPreferenceNotNull<SwitchPreference>(
-            "byedpi_enable_cmd_settings"
-        )
+        val accessibilityStatusPref = findPreferenceNotNull<Preference>("accessibility_service_status")
+        val switchCommandLineSettings = findPreferenceNotNull<SwitchPreference>("byedpi_enable_cmd_settings")
+
         val uiSettings = findPreferenceNotNull<Preference>("byedpi_ui_settings")
         val cmdSettings = findPreferenceNotNull<Preference>("byedpi_cmd_settings")
 
@@ -70,23 +70,13 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreferenceNotNull<Preference>("version").summary = BuildConfig.VERSION_NAME
-
-        val accessibilityStatusPref = findPreference<Preference>("accessibility_service_status")
-        accessibilityStatusPref?.setOnPreferenceClickListener {
+        accessibilityStatusPref.setOnPreferenceClickListener {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)
             true
         }
 
-        val selectedApps = findPreference<Preference>("selected_apps")
-        selectedApps?.setOnPreferenceClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.settings, AppSelectionFragment())
-                .addToBackStack(null)
-                .commit()
-            true
-        }
+        findPreferenceNotNull<Preference>("version").summary = BuildConfig.VERSION_NAME
 
         updateAccessibilityStatus(accessibilityStatusPref)
         updatePreferences()
@@ -95,9 +85,7 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         super.onResume()
         sharedPreferences?.registerOnSharedPreferenceChangeListener(preferenceListener)
-
-        val accessibilityStatusPref = findPreference<Preference>("accessibility_service_status")
-        updateAccessibilityStatus(accessibilityStatusPref)
+        updatePreferences()
     }
 
     override fun onPause() {
@@ -113,6 +101,9 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
 
         val applist_type = findPreferenceNotNull<ListPreference>("applist_type")
         val selected_apps = findPreferenceNotNull<Preference>("selected_apps")
+        val accessibilityStatusPref = findPreferenceNotNull<Preference>("accessibility_service_status")
+
+        updateAccessibilityStatus(accessibilityStatusPref)
 
         when (mode) {
             Mode.VPN -> {
