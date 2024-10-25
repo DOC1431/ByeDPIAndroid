@@ -44,7 +44,8 @@
 
         <Preference
             android:key="selected_apps"
-            android:title="@string/apps_select" />
+            android:title="@string/apps_select"
+            app:fragment="io.github.dovecoteescapee.byedpi.fragments.AppSelectionFragment" />
 
     </androidx.preference.PreferenceCategory>
 
